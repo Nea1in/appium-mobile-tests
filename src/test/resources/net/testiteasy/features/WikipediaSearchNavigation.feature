@@ -1,4 +1,10 @@
 @regression
+  # please check RunCucumberTest.java
+  # it contains filter "@smoke AND @regression"
+  # it was OK when running tests individually locally
+  # just be aware that the scope will be filtered when launching tests with Runner class or on CI
+  # with added @smoke all test will be started
+@smoke
 @navigation
 Feature: Search navigation
 

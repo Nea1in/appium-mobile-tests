@@ -12,6 +12,8 @@ import static com.codeborne.selenide.Selenide.back;
 
 import io.appium.java_client.AppiumBy;
 
+// locators below are Android-only (resource-ids / android.widget.* classes);
+// IOSSearchScreen does not override them, so these steps aren't runnable on iOS yet
 public class SearchScreen {
 
     private final By SEARCH_FIELD_PLACEHOLDER =
@@ -49,8 +51,9 @@ public class SearchScreen {
     private final By MORE_OPTIONS =
             AppiumBy.accessibilityId("More options");
 
-    private final By ARTICLE_WEB_VIEW =
-            By.id("org.wikipedia.dev:id/page_web_view");
+    // delete commented. Zero tolerance to dead-code or provide a reason in a comment why it should be here
+//    private final By ARTICLE_WEB_VIEW =
+//            By.id("org.wikipedia.dev:id/page_web_view");
 
     private final By SEARCH_RESULTS =
             By.id("org.wikipedia.dev:id/fragment_search_results");
@@ -84,11 +87,12 @@ public class SearchScreen {
         }
     }
 
-    public void selectSearchResult(String itemText) {
-        $(searchResult(itemText))
-                .shouldBe(Condition.visible)
-                .click();
-    }
+    // delete commented
+//    public void selectSearchResult(String itemText) {
+//        $(searchResult(itemText))
+//                .shouldBe(Condition.visible)
+//                .click();
+//    }
 
     public void checkArticleOpened(String articleTitle) {
         By articleTitleLocator = By.xpath(
@@ -102,12 +106,11 @@ public class SearchScreen {
         $(articleTitleLocator).shouldBe(Condition.visible);
     }
 
-    public void checkArticleOpened() {
-        $(ARTICLE_WEB_VIEW)
-                .shouldBe(Condition.visible);
-    }
-
-
+    // dead code => delete commented
+//    public void checkArticleOpened() {
+//        $(ARTICLE_WEB_VIEW)
+//                .shouldBe(Condition.visible);
+//    }
 
     public void pressBack() {
         back();
@@ -122,37 +125,47 @@ public class SearchScreen {
     public void selectFirstSearchResult(String itemText) {
 
         $(SEARCH_RESULTS)
-                .shouldBe(Condition.visible);
+                .shouldBe(Condition.visible); // <= here if not visible we get exception.
+        // as element visibility mandatory here =>
+        // wrap with "try - catch" with clear explicit exception reason
         clickOnSearchResult(itemText);
 
         if ($(SEARCH_RESULTS_INFORMATION_ICON).is(Condition.visible)) {
             clickOnSearchResult(itemText);
         }
 
+        // Wikipedia shows random onboarding banners right after opening a result =>
+        // dismiss anything that might cover the article before returning to the caller
+
+        // all 3 steps could be moved to private method closeAllOnboardingBanners(), so public method will be cleaner
         closeYearInReviewOnboardingIfPresent();
         closeWikipediaGamesPopupIfPresent();
         closeToolbarOnboardingIfPresent();
     }
 
+    // reuse searchResult(...) instead of re-building the same xpath here (was duplicated)
     private void clickOnSearchResult(String itemText) {
-        $(By.xpath(
-                String.format(
-                        "//android.widget.TextView[@text=\"%s\"]",
-                        itemText
-                )
-        ))
+        $(searchResult(itemText))
                 .shouldBe(Condition.visible)
                 .click();
     }
 
+    // suggested solution #1: make approach match your method closeWikipediaGamesPopupIfPresent()
+    // suggested solution #2: same as closeNewSearchOnboardingIfPresent()
+    // as we experimenting here - we may have 2 approaches for similar action "clickIfPresent()"
+
+    // one more thing about naming. As in Selenide Conditions we have defined Condition.visible =>
+    // it's better to use same in method's name: closeWikipediaGamesPopupIfPresent() => closeWikipediaGamesPopupIfVisible()
+    // Condition.exist and Condition.visible are defined - tend to use them, rather than synonyms, to be unambiguous
+    // pay attention on difference between conditions "exist" and "visible"
     public void closeYearInReviewOnboardingIfPresent() {
         SelenideElement closeButton =
-            $(YEAR_IN_REVIEW_ONBOARDING_CLOSE)
-                    .shouldBe(Condition.visible);
+            $(YEAR_IN_REVIEW_ONBOARDING_CLOSE);
+//                    .shouldBe(Condition.visible); <= if element will not be visible we get an exception here
         if (closeButton.is(Condition.visible)) {
             closeButton.click();
         }
-
+// extra line not needed here => code is read good without it
     }
 
     public void closeWikipediaGamesPopupIfPresent() {

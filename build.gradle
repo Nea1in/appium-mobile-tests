@@ -28,7 +28,11 @@ repositories {
     mavenCentral()
     mavenLocal()
     maven {
-        url = uri('https://repo.maven.apache.org/maven2/')
+        // this url line was immediately overwritten by the next `url =`
+        // assignment below (maven{} block only keeps the last url set), so it was dead config
+        // anyway - Maven Central is already added via mavenCentral() above
+        // url = uri('https://repo.maven.apache.org/maven2/')
+        // no build errors, just code clean up
         url = uri('https://jitpack.io')
         mavenContent { snapshotsOnly() }
     }

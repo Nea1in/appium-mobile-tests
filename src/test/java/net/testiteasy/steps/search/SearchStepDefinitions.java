@@ -1,15 +1,14 @@
 package net.testiteasy.steps.search;
 
-import io.cucumber.java.PendingException;
+// unused import. Deleting...
+//import io.cucumber.java.PendingException;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
 import net.testiteasy.screens.search.SearchScreen;
 import net.testiteasy.screens.search.SearchScreenObjectFactory;
 
-// TODO -->
-// -- This step for the Search screen should be changed and finished in courses.
-// -- You need to think over the logic of using this Search screen.
+// class was updated by accordingly -- now removing unnecessary outdated comment
 public class SearchStepDefinitions {
 
     private final SearchScreen searchScreen = SearchScreenObjectFactory.get();
@@ -20,10 +19,12 @@ public class SearchStepDefinitions {
         searchScreen.typeSearchQuery(searchInput);
     }
 
-    @When("user selects search result {string}")
-    public void userSelectsSearchResult(String result) {
-        searchScreen.selectSearchResult(result);
-    }
+    // unused step. Deleting...
+    // I know it was done for learning purposes, but trying to check code strictly
+//    @When("user selects search result {string}")
+//    public void userSelectsSearchResult(String result) {
+//        searchScreen.selectSearchResult(result);
+//    }
 
     @Then("article {string} is opened")
     public void articleIsOpened(String title) {
